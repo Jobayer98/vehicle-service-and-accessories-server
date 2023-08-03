@@ -35,7 +35,13 @@ router.get("/products", async (req, res) => {
   }
 
   try {
-    const products = await Product.aggregate(aggregatePipeline);
+    let products;
+
+    if (aggregatePipeline.length > 0) {
+      products = await Product.aggregate(aggregatePipeline);
+    } else {
+      products = await Product.find();
+    }
 
     if (!products) {
       return res.status(404).send({ errorMessage: "No products found" });
