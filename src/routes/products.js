@@ -34,9 +34,13 @@ router.get("/products", async (req, res) => {
     });
   }
 
+  if (Number(req.query.sort)) {
+    aggregatePipeline.push({
+      $sort: { price: Number(req.query.sort) },
+    });
+  }
   try {
     let products;
-
     if (aggregatePipeline.length > 0) {
       products = await Product.aggregate(aggregatePipeline);
     } else {
@@ -48,6 +52,20 @@ router.get("/products", async (req, res) => {
     }
 
     res.status(200).send(products);
+  } catch (error) {
+    res.status(500).send({ errorMessage: error.message });
+  }
+});
+
+router.get("/products/:id", async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.id);
+
+    if (!product) {
+      return res.status(404).send({ message: "product not found" });
+    }
+
+    res.send(product);
   } catch (error) {
     res.status(500).send({ errorMessage: error.message });
   }

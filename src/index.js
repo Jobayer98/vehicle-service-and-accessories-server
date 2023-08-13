@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require("cors")
 
 // internal module
 require("./config/db");
@@ -11,6 +12,7 @@ const bookingRoutes = require("./routes/booking");
 const app = express();
 const port = process.env.PORT || 3000;
 
+app.use(cors())
 app.use(express.json());
 app.use(fuelRoutes);
 app.use(serviceRoutes);
