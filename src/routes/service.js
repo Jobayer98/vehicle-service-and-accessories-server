@@ -1,12 +1,11 @@
 const express = require("express");
-const bikeService = require("../models/bikeService.model");
-const carService = require("../models/carService.model");
+const Service = require("../models/Service.model");
 
 const router = express.Router();
 
 router.get("/carServices", async (req, res) => {
   try {
-    const services = await carService.find({});
+    const services = await Service.find({vehicle: "car"});
 
     if (!services) {
       return res.status(404).send({ errorMessage: "No services found" });
@@ -20,8 +19,34 @@ router.get("/carServices", async (req, res) => {
 
 router.get("/bikeServices", async (req, res) => {
   try {
-    const services = await bikeService.find({});
+    const services = await Service.find({vehicle: "bike"});
 
+    if (!services) {
+      return res.status(404).send({ errorMessage: "No services found" });
+    }
+
+    res.status(200).send(services);
+  } catch (error) {
+    res.status(500).send({ errorMessage: error.message });
+  }
+});
+
+router.get("/services", async (req, res) => {
+  try {
+    const services = await Service.find().limit(3)
+    if (!services) {
+      return res.status(404).send({ errorMessage: "No services found" });
+    }
+
+    res.status(200).send(services);
+  } catch (error) {
+    res.status(500).send({ errorMessage: error.message });
+  }
+});
+
+router.get("/services/:id", async (req, res) => {
+  try {
+    const services = await Service.find({_id: req.params.id})
     if (!services) {
       return res.status(404).send({ errorMessage: "No services found" });
     }

@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
-const bookingSchema = new mongoose.Schema({
+const appointmentSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
@@ -21,21 +21,24 @@ const bookingSchema = new mongoose.Schema({
     required: true,
     trim: true,
   },
-  address: {
-    type: String,
-    required: true,
-    trim: true,
-  },
-  vehicle: {
+  date: {
     type: String,
     required: true
   },
-  description: {
+  vehicle: {
     type: String,
-    trim: true,
+    required: true,
   },
+  serviceName: String,
+  servicePrice: Number,
+  serviceDuration: String,
+  status: {
+    type: String,
+  default: "pending"
+  }
+
 });
 
-const Booking = mongoose.model("Booking", bookingSchema);
+const Appointment = mongoose.model("Appointment", appointmentSchema);
 
-module.exports = Booking;
+module.exports = Appointment;

@@ -1,23 +1,23 @@
 const express = require("express");
-const Booking = require("../models/booking.model");
+const Appointment = require("../models/appointment.model")
 
 const router = express.Router();
 
-router.post("/my-service", async (req, res) => {
+router.post("/appointment", async (req, res) => {
   try {
-    const booking = await Booking.create(req.body);
-    res.status(201).send(booking);
+    const appointment = await Appointment.create(req.body);
+    res.status(201).send(appointment);
   } catch (error) {
     res.status(500).send({ errorMessage: error.message });
   }
 });
 
-router.get("/my-service", async (req, res) => {
+router.get("/my-bookings", async (req, res) => {
   try {
-    const bookings = await Booking.find();
+    const bookings = await Appointment.find();
 
     if (!bookings || bookings.length === 0) {
-      return res.status(404).send({ errorMessage: "No bookings found" });
+      return res.status(404).send();
     }
 
     res.status(200).send(bookings);
@@ -26,7 +26,21 @@ router.get("/my-service", async (req, res) => {
   }
 });
 
-router.patch("/my-service/:id", async (req, res) => {
+router.get("/my-bookings/:id", async (req, res) => {
+  try {
+    const bookings = await Appointment.find({_id: req.params.id});
+
+    if (!bookings || bookings.length === 0) {
+      return res.status(404).send();
+    }
+
+    res.status(200).send(bookings);
+  } catch (error) {
+    res.status(500).send({ errorMessage: error.message });
+  }
+});
+
+router.patch("/my-bookings/:id", async (req, res) => {
   const updates = Object.keys(req.body);
   const allowedUpdates = ["bookingDate", "description"];
 
@@ -39,7 +53,7 @@ router.patch("/my-service/:id", async (req, res) => {
   }
 
   try {
-    const booking = await Booking.findById(req.params.id);
+    const booking = await Appointment.findById(req.params.id);
 
     updates.forEach((update) => (booking[update] = req.body[update]));
     await booking.save();
@@ -50,13 +64,13 @@ router.patch("/my-service/:id", async (req, res) => {
   }
 });
 
-router.delete("/my-service/:id", async (req, res) => {
+router.delete("/my-bookings/:id", async (req, res) => {
   try {
-    const booking = await Booking.findByIdAndDelete(req.params.id);
+    const booking = await Appointment.findByIdAndDelete(req.params.id);
     if (!booking) {
       return res.status(404).send({ errorMessage: "Booking not found" });
     }
-    res.send(booking);
+    res.send({status: true});
   } catch (error) {
     res.status(500).send({ errorMessage: error.message });
   }
