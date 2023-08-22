@@ -34,6 +34,10 @@ const bookingSchema = new mongoose.Schema({
     type: String,
     trim: true,
   },
+  status: {
+    type: String,
+  default: "pending"
+  },
 });
 
 const Booking = mongoose.model("Booking", bookingSchema);
